@@ -16,7 +16,7 @@
 # Changelog
 
 - 1.1.0 Initial Release Version
-
+- 1.1.1 Littel Bugfix.
 
 # installation 
 
