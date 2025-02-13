@@ -99,6 +99,9 @@ end
             end
         else
             exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability }, 1, nil)
+            local NewItemID = exports.vorp_inventory:getItem(src, Config.ChopItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
+            local NewToolId = NewItemID.id
+            TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
         end
     else
         local Durability = Config.ItemMaxUses - Config.ItemUsage
