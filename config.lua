@@ -29,8 +29,10 @@ Config.CactusProps = {
 }
 
 Config.ChopItem = 'hatchet' -- Make sure its not used in Another Script in case it get Buggy then 
+Config.ChopItem2 = 'hatchet2' -- Make sure its not used in Another Script in case it get Buggy then
 Config.ItemUsage = 1 -- Usage Per Swing
 Config.ItemMaxUses = 250 -- Max Durability
+Config.ItemMaxUses2 = 250 -- Max Durability
 Config.ChopTime = 3500  -- Time in MS 5000 = 5 Sec
 Config.ToolHash = 'p_axe02x' -- Axt Model
 

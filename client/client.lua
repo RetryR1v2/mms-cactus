@@ -10,14 +10,16 @@ local Chopped = false
 
 local Toolout = false
 local ToolId = nil
-local Durability = nil
+local CurrentItem = nil
+local CurrentItemMaxUses = nil
 
 -- Axe out
 
 RegisterNetEvent('mms-cactus:client:ToolOut')
-AddEventHandler('mms-cactus:client:ToolOut',function(ItemId,CurrentDurability)
+AddEventHandler('mms-cactus:client:ToolOut',function(ItemId,UsedItem,MaxUses)
     ToolId = ItemId
-    Durability = CurrentDurability
+    CurrentItem = UsedItem
+    CurrentItemMaxUses = MaxUses
     MyPed = PlayerPedId()
     if not Toolout then
         Wait(500)
@@ -84,7 +86,7 @@ while true do
                 ChopCactus:TogglePrompt(false)
                 Wait(200)
                 ChopCactus:TogglePrompt(true)
-                TriggerEvent('mms-cactus:client:ChopCactus',ToolId,Durability)
+                TriggerEvent('mms-cactus:client:ChopCactus',ToolId)
             end
             Chopped = false
         end
@@ -99,13 +101,13 @@ end)
 -- Getting Cactus
 
 RegisterNetEvent('mms-cactus:client:ChopCactus')
-AddEventHandler('mms-cactus:client:ChopCactus',function(ToolId,Durability)
+AddEventHandler('mms-cactus:client:ChopCactus',function(ToolId)
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
     Anim(MyPed, "amb_work@world_human_tree_chop_new@working@pre_swing@male_a@trans", "pre_swing_trans_after_swing",
     -1, 7)
     Progressbar(Config.ChopTime,_U('WorkingHere'))
-    TriggerServerEvent('mms-cactus:server:FinishChoppingcactus',ToolId,Durability)
+    TriggerServerEvent('mms-cactus:server:FinishChoppingcactus',ToolId,CurrentItem,CurrentItemMaxUses)
 end)
 
 --- Refresh Them

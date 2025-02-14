@@ -3,10 +3,20 @@ local VORPcore = exports.vorp_core:GetCore()
 exports.vorp_inventory:registerUsableItem(Config.ChopItem, function(data)
     local src = data.source
     local ItemId = data.item.mainid
-    TriggerClientEvent('mms-cactus:client:ToolOut',src,ItemId)
+    local UsedItem = Config.ChopItem
+    local MaxUses = Config.ItemMaxUses
+    TriggerClientEvent('mms-cactus:client:ToolOut',src,ItemId,UsedItem,MaxUses)
 end)
 
-RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Durability)
+exports.vorp_inventory:registerUsableItem(Config.ChopItem2, function(data)
+    local src = data.source
+    local ItemId = data.item.mainid
+    local UsedItem = Config.ChopItem2
+    local MaxUses = Config.ItemMaxUses2
+    TriggerClientEvent('mms-cactus:client:ToolOut',src,ItemId,UsedItem,MaxUses)
+end)
+
+RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,CurrentItem,CurrentItemMaxUses)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
     local Name = Character.firstname .. ' ' .. Character.lastname
@@ -99,15 +109,15 @@ end
             end
         else
             exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability }, 1, nil)
-            local NewItemID = exports.vorp_inventory:getItem(src, Config.ChopItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
+            local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
             local NewToolId = NewItemID.id
             TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
         end
     else
-        local Durability = Config.ItemMaxUses - Config.ItemUsage
+        local Durability = CurrentItemMaxUses - Config.ItemUsage
         exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, cactusdurability =  Durability }, 1, nil)
         Citizen.Wait(150)
-        local NewItemID = exports.vorp_inventory:getItem(src, Config.ChopItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
+        local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
         local NewToolId = NewItemID.id
         TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
     end

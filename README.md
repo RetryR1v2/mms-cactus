@@ -17,6 +17,7 @@
 
 - 1.1.0 Initial Release Version
 - 1.1.1 Littel Bugfix.
+- 1.1.2 Added Second Item
 
 # installation 
 
