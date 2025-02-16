@@ -29,15 +29,16 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
     end
     if Config.JobMultiplier then
         if Config.AlwaysGetItem then
-            local CanCarryItem = exports.vorp_inventory:canCarryItem(src, Config.AlwaysItem, Config.AlwaysItemAmount  * Multiplier)
+            local Round = math.floor(Config.AlwaysItemAmount  * Multiplier)
+            local CanCarryItem = exports.vorp_inventory:canCarryItem(src, Config.AlwaysItem, Round)
             if CanCarryItem then
                 exports.vorp_inventory:addItem(src, Config.AlwaysItem, Config.AlwaysItemAmount * Multiplier)
-                VORPcore.NotifyRightTip(src,_U('YouGot') .. Config.AlwaysItemAmount  * Multiplier .. ' ' .. Config.AlwaysItemLabel,5000)
+                VORPcore.NotifyRightTip(src,_U('YouGot') .. Round .. ' ' .. Config.AlwaysItemLabel,5000)
                 if Config.WebHook  then
-                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGot') .. Config.AlwaysItemAmount  * Multiplier .. ' ' .. Config.AlwaysItemLabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGot') .. Round .. ' ' .. Config.AlwaysItemLabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
                 end
             else
-                VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Config.AlwaysItemAmount  * Multiplier .. ' ' .. Config.AlwaysItemLabel,5000)
+                VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Round .. ' ' .. Config.AlwaysItemLabel,5000)
             end
         end
         --- Lucky Bonus Item Part
@@ -47,15 +48,16 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
                 local MaxIndex = #Config.LuckyItemsTable
                 local RandomIndex = math.random(1,MaxIndex)
                 local PickedItem = Config.LuckyItemsTable[RandomIndex]
-                local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount * Multiplier)
+                local Round = math.floor(PickedItem.Amount * Multiplier)
+                local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, Round)
                 if CanCarryItem then
-                    exports.vorp_inventory:addItem(src, PickedItem.Item, PickedItem.Amount  * Multiplier)
-                    VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. PickedItem.Amount  * Multiplier .. ' ' .. PickedItem.Label,5000)
+                    exports.vorp_inventory:addItem(src, PickedItem.Item, Round)
+                    VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. Round .. ' ' .. PickedItem.Label,5000)
                 if Config.WebHook  then
-                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount  * Multiplier .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
                 end
                 else
-                    VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. PickedItem.Amount  * Multiplier .. ' ' .. PickedItem.Label,5000)
+                    VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Round .. ' ' .. PickedItem.Label,5000)
                 end
             end
         end

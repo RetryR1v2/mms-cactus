@@ -12,6 +12,8 @@ local Toolout = false
 local ToolId = nil
 local CurrentItem = nil
 local CurrentItemMaxUses = nil
+local InTown = false
+local TownName = nil
 
 -- Axe out
 
@@ -80,13 +82,17 @@ while true do
             ChopCactusPrompt:ShowGroup(_U('Cactus'))
             
             if ChopCactus:HasCompleted() then
-                Wait(200)
-                ChoppedCactus[#ChoppedCactus + 1] = PlayerCoords
-                ChoppedCactusProps = true
-                ChopCactus:TogglePrompt(false)
-                Wait(200)
-                ChopCactus:TogglePrompt(true)
-                TriggerEvent('mms-cactus:client:ChopCactus',ToolId)
+                if not InTown then
+                    Wait(200)
+                    ChoppedCactus[#ChoppedCactus + 1] = PlayerCoords
+                    ChoppedCactusProps = true
+                    ChopCactus:TogglePrompt(false)
+                    Wait(200)
+                    ChopCactus:TogglePrompt(true)
+                    TriggerEvent('mms-cactus:client:ChopCactus',ToolId)
+                else
+                    VORPcore.NotifyTip(_U('InHere') .. TownName .. _U('YouCantChop'),5000)
+                end
             end
             Chopped = false
         end
@@ -127,7 +133,41 @@ Citizen.CreateThread(function()
     end
 end)
 
+--- In Town Check
 
+RegisterNetEvent('vorp:SelectedCharacter')
+AddEventHandler('vorp:SelectedCharacter', function()
+    Citizen.Wait(10000)
+    if Config.TownRestriction then
+        TriggerEvent('mms-cactus:client:TownCheck')
+    end
+end)
+
+RegisterNetEvent('mms-cactus:client:TownCheck')
+AddEventHandler('mms-cactus:client:TownCheck',function()
+    while true do
+        local CloseTown = 0
+        Citizen.Wait(3000)
+        local MyCoords = GetEntityCoords(PlayerPedId())
+        for h,v in ipairs(Config.Towns) do
+            local Distance = #(MyCoords - v.Town)
+            if Distance <= v.TownDistance then
+                CloseTown = 1
+                TownName = v.TownName
+            end
+        end
+        if CloseTown > 0 then
+            InTown = true
+        elseif CloseTown == 0 then
+            InTown = false
+        end
+    end
+end)
+
+if Config.Debug then
+    Citizen.Wait(2000)
+    TriggerEvent('mms-cactus:client:TownCheck')
+end
 
 
 ----------------- Utilities -----------------

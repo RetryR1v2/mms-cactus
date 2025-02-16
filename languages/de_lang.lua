@@ -9,4 +9,6 @@ Locales["de_lang"] = {
     YouGotLuck = 'Du hast Glück und bekommst zusätzlich: ',
     WHGotLucky = ' bekommt durch Glück: ',
     ToolBroken = 'Dein Werkzeug ist Kaputt',
+    InHere = 'In ',
+    YouCantChop = ' kannst du nicht Hacken.',
 }

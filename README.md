@@ -18,6 +18,8 @@
 - 1.1.0 Initial Release Version
 - 1.1.1 Littel Bugfix.
 - 1.1.2 Added Second Item
+- 1.1.3 Added Town Restriction
+- Fixed Multiplier Bug where you can get Half Items
 
 # installation 
 
