@@ -20,6 +20,7 @@
 - 1.1.2 Added Second Item
 - 1.1.3 Added Town Restriction
 - Fixed Multiplier Bug where you can get Half Items
+- 1.1.4 Added Support for Older VORP Invetory Version
 
 # installation 
 
