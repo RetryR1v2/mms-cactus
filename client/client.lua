@@ -133,6 +133,18 @@ Citizen.CreateThread(function()
     end
 end)
 
+-- RepairTool
+
+RegisterNetEvent('mms-cactus:client:RepairTool')
+AddEventHandler('mms-cactus:client:RepairTool',function()
+    if Toolout then
+        TriggerServerEvent('mms-cactus:server:RepairTool',ToolId,CurrentItemMaxUses)
+        Progressbar(Config.RepairTime * 1000 ,_U('RepairingTool'))
+    else
+        VORPcore.NotifyTip(_U('NoToolInHand'),5000)
+    end
+end)
+
 --- In Town Check
 
 RegisterNetEvent('vorp:SelectedCharacter')

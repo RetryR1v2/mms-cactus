@@ -41,6 +41,16 @@ Config.AlwaysItem = 'cactusfruit' -- item to Get.
 Config.AlwaysItemLabel = 'Kaktusfrucht' -- item Label
 Config.AlwaysItemAmount = 4 -- Get 4 Every Swing no Empty Swings
 
+-- Repair Sytem 
+
+Config.RepairItem = 'rock' -- Item To Repair the Tool
+Config.RepairItemUsage = 1 -- 1 Item Needed to Repair
+Config.RepairAmount = 150 -- How Much Durability Should be added.
+Config.RepairTime = 5 -- Time in Sec
+Config.CanMoreThenMaxUses = true
+
+-- Reward System
+
 Config.LuckyItems = true
 Config.LuckyChance = 6 -- 1 = 10% , 2 = 20% ....
 Config.LuckyItemsTable = {

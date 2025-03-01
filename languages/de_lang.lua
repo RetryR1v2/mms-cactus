@@ -11,4 +11,8 @@ Locales["de_lang"] = {
     ToolBroken = 'Dein Werkzeug ist Kaputt',
     InHere = 'In ',
     YouCantChop = ' kannst du nicht Hacken.',
+    NoToolInHand = 'Du hast kein Werkzeug in der Hand um es zu Reparieren.',
+    ToolIsNew = 'Dieses Werkzeug ist nicht Beschädigt.',
+    NoRepairItem = 'Kein Reperatur Werkzeug',
+    RepairingTool = 'Repariere Werkzeug',
 }
