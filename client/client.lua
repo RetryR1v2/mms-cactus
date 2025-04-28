@@ -89,7 +89,7 @@ while true do
                     ChopCactus:TogglePrompt(false)
                     Wait(200)
                     ChopCactus:TogglePrompt(true)
-                    TriggerEvent('mms-cactus:client:ChopCactus',ToolId)
+                    TriggerServerEvent('mms-cactus:server:CheckForTool',ToolId)
                 else
                     VORPcore.NotifyTip(_U('InHere') .. TownName .. _U('YouCantChop'),5000)
                 end
@@ -103,6 +103,32 @@ while true do
     end
 end
 end)
+
+-- Check Player Status
+Citizen.CreateThread(function()
+    local MyPed = PlayerPedId()
+    while true do
+        Citizen.Wait(5000)
+        if Toolout then
+            CanDoWork = CanWork(MyPed)
+            if not CanDoWork then
+                TriggerEvent('mms-cactus:client:ToolOut')
+            end
+        end
+    end
+end)
+
+function CanWork (MyPed)
+    local Dead = IsPedDeadOrDying(MyPed)
+    local OnHorse = IsPedOnMount(MyPed)
+    local OnWagon = IsPedOnVehicle(MyPed)
+    local InWater = IsPedSwimmingUnderWater(MyPed)
+    if not Dead and not OnHorse and not OnWagon and not InWater then
+        return true
+    else
+        return false
+    end
+end
 
 -- Getting Cactus
 

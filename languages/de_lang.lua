@@ -15,4 +15,6 @@ Locales["de_lang"] = {
     ToolIsNew = 'Dieses Werkzeug ist nicht Beschädigt.',
     NoRepairItem = 'Kein Reperatur Werkzeug',
     RepairingTool = 'Repariere Werkzeug',
+    --NEW
+    YouHaveNoToolInPocket = 'Du hast kein Werkzeug',
 }

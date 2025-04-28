@@ -152,7 +152,7 @@ end
     --- Remove Tool / Tool Durability
     if Config.LatestVORPInvetory then
         local ItemData = exports.vorp_inventory:getItemById(src, ToolId)
-        if ItemData ~= nil and ItemData.metadata.lumberdurability ~= nil then
+        if ItemData ~= nil and ItemData.metadata.cactusdurability ~= nil then
             local NewDurability = ItemData.metadata.cactusdurability - Config.ItemUsage
             if NewDurability < Config.ItemUsage then
                 exports.vorp_inventory:subItemById(src, ToolId,nil,nil,1)
@@ -174,7 +174,7 @@ end
         end
     else
         local ItemData = exports.vorp_inventory:getItemByMainId(src, ToolId)
-        if ItemData ~= nil and ItemData.metadata.lumberdurability ~= nil then
+        if ItemData ~= nil and ItemData.metadata.cactusdurability ~= nil then
             local NewDurability = ItemData.metadata.cactusdurability - Config.ItemUsage
             if NewDurability < Config.ItemUsage then
                 exports.vorp_inventory:subItemID(src, ToolId)
@@ -193,6 +193,27 @@ end
             local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
             local NewToolId = NewItemID.id
             TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
+        end
+    end
+end)
+
+RegisterServerEvent('mms-cactus:server:CheckForTool',function(ToolId)
+    local src = source
+    if Config.LatestVORPInvetory then
+        local GetItem = exports.vorp_inventory:getItemById(src,ToolId)
+        if GetItem ~= nil then
+            TriggerClientEvent('mms-cactus:client:ChopCactus',src,ToolId)
+        else
+            VORPcore.NotifyRightTip(src,_U('YouHaveNoToolInPocket'),5000)
+            TriggerClientEvent('mms-cactus:client:ToolOut',src)
+        end
+    else
+        local GetItem = exports.vorp_inventory:getItemByMainId(src,ToolId)
+        if GetItem ~= nil then
+            TriggerClientEvent('mms-cactus:client:ChopCactus',src,ToolId)
+        else
+            VORPcore.NotifyRightTip(src,_U('YouHaveNoToolInPocket'),5000)
+            TriggerClientEvent('mms-cactus:client:ToolOut',src)
         end
     end
 end)
