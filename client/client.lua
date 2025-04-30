@@ -33,6 +33,7 @@ AddEventHandler('mms-cactus:client:ToolOut',function(ItemId,UsedItem,MaxUses)
         ForceEntityAiAndAnimationUpdate(Tool, 1)
         Citizen.InvokeNative(0x3A50753042B6891B, MyPed, "PITCH_FORKS")
         Toolout = true
+        TriggerEvent('mms-cactus:client:CheckCanWork')
     elseif Toolout then
         Wait(500)
         DeleteObject(Tool)
@@ -105,12 +106,12 @@ end
 end)
 
 -- Check Player Status
-Citizen.CreateThread(function()
-    local MyPed = PlayerPedId()
-    while true do
+RegisterNetEvent('mms-cactus:client:CheckCanWork')
+AddEventHandler('mms-cactus:client:CheckCanWork',function()
+    while Toolout do
         Citizen.Wait(5000)
         if Toolout then
-            CanDoWork = CanWork(MyPed)
+            CanDoWork = CanWork()
             if not CanDoWork then
                 TriggerEvent('mms-cactus:client:ToolOut')
             end
@@ -119,6 +120,7 @@ Citizen.CreateThread(function()
 end)
 
 function CanWork (MyPed)
+    local MyPed = PlayerPedId()
     local Dead = IsPedDeadOrDying(MyPed)
     local OnHorse = IsPedOnMount(MyPed)
     local OnWagon = IsPedOnVehicle(MyPed)
