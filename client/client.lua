@@ -56,7 +56,7 @@ end)
 
 Citizen.CreateThread(function ()
     local ChopCactusPrompt = BccUtils.Prompts:SetupPromptGroup()
-    local ChopCactus = ChopCactusPrompt:RegisterPrompt(_U('Chop'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
+    local ChopCactus = ChopCactusPrompt:RegisterPrompt(_U('Chop'), 0x760A9C6F, 1, 1, true, 'click') --, {timedeventhash = 'MEDIUM_TIMED_EVENT'})
 while true do
     Citizen.Wait(1500)
 
@@ -138,9 +138,11 @@ RegisterNetEvent('mms-cactus:client:ChopCactus')
 AddEventHandler('mms-cactus:client:ChopCactus',function(ToolId)
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
+    FreezeEntityPosition(MyPed,true)
     Anim(MyPed, "amb_work@world_human_tree_chop_new@working@pre_swing@male_a@trans", "pre_swing_trans_after_swing",
     -1, 7)
     Progressbar(Config.ChopTime,_U('WorkingHere'))
+    FreezeEntityPosition(MyPed,false)
     TriggerServerEvent('mms-cactus:server:FinishChoppingcactus',ToolId,CurrentItem,CurrentItemMaxUses)
 end)
 

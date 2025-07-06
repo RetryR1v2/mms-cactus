@@ -24,6 +24,7 @@
 - 1.1.5 Added Repair Tool Function
 - 1.1.6 BugFix
 - 1.1.7 BugFix
+- 1.1.8 Improved Mechanics
 
 # installation 
 
