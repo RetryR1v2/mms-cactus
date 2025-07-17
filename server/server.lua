@@ -75,6 +75,8 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
     local Character = VORPcore.getUser(src).getUsedCharacter
     local Name = Character.firstname .. ' ' .. Character.lastname
     local Multiplier = 1
+    local CanCarryItems = false
+    local CanCarryItems2 = false
     local job = Character.job
     for h,v in ipairs(Config.JobBonus) do
         if v.Job == job then
@@ -86,6 +88,7 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
             local Round = math.floor(Config.AlwaysItemAmount  * Multiplier)
             local CanCarryItem = exports.vorp_inventory:canCarryItem(src, Config.AlwaysItem, Round)
             if CanCarryItem then
+                CanCarryItems = true
                 exports.vorp_inventory:addItem(src, Config.AlwaysItem, Config.AlwaysItemAmount * Multiplier)
                 VORPcore.NotifyRightTip(src,_U('YouGot') .. Round .. ' ' .. Config.AlwaysItemLabel,5000)
                 if Config.WebHook  then
@@ -105,11 +108,12 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
                 local Round = math.floor(PickedItem.Amount * Multiplier)
                 local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, Round)
                 if CanCarryItem then
+                    CanCarryItems2 = true
                     exports.vorp_inventory:addItem(src, PickedItem.Item, Round)
                     VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. Round .. ' ' .. PickedItem.Label,5000)
-                if Config.WebHook  then
-                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
-                end
+                    if Config.WebHook  then
+                        VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    end
                 else
                     VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Round .. ' ' .. PickedItem.Label,5000)
                 end
@@ -120,6 +124,7 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
     if Config.AlwaysGetItem then
         local CanCarryItem = exports.vorp_inventory:canCarryItem(src, Config.AlwaysItem, Config.AlwaysItemAmount)
         if CanCarryItem then
+            CanCarryItems = true
             exports.vorp_inventory:addItem(src, Config.AlwaysItem, Config.AlwaysItemAmount)
             VORPcore.NotifyRightTip(src,_U('YouGot') .. Config.AlwaysItemAmount .. ' ' .. Config.AlwaysItemLabel,5000)
             if Config.WebHook  then
@@ -138,11 +143,12 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
             local PickedItem = Config.LuckyItemsTable[RandomIndex]
             local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount)
             if CanCarryItem then
+                CanCarryItems2 = true
                 exports.vorp_inventory:addItem(src, PickedItem.Item, PickedItem.Amount)
                 VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
-            if Config.WebHook  then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
-            end
+                if Config.WebHook  then
+                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                end
             else
                 VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
             end
@@ -150,49 +156,51 @@ RegisterServerEvent('mms-cactus:server:FinishChoppingcactus',function(ToolId,Cur
     end
 end
     --- Remove Tool / Tool Durability
-    if Config.LatestVORPInvetory then
-        local ItemData = exports.vorp_inventory:getItemById(src, ToolId)
-        if ItemData ~= nil and ItemData.metadata.cactusdurability ~= nil then
-            local NewDurability = ItemData.metadata.cactusdurability - Config.ItemUsage
-            if NewDurability < Config.ItemUsage then
-                exports.vorp_inventory:subItemById(src, ToolId,nil,nil,1)
-                TriggerClientEvent('mms-cactus:client:ToolOut',src,ToolId)
-                VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+    if CanCarryItems or CanCarryItems2 then
+        if Config.LatestVORPInvetory then
+            local ItemData = exports.vorp_inventory:getItemById(src, ToolId)
+            if ItemData ~= nil and ItemData.metadata.cactusdurability ~= nil then
+                local NewDurability = ItemData.metadata.cactusdurability - Config.ItemUsage
+                if NewDurability < Config.ItemUsage then
+                    exports.vorp_inventory:subItemById(src, ToolId,nil,nil,1)
+                    TriggerClientEvent('mms-cactus:client:ToolOut',src,ToolId)
+                    VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+                else
+                    exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability }, 1, nil)
+                    local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
+                    local NewToolId = NewItemID.id
+                    TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
+                end
             else
-                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability }, 1, nil)
-                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
+                local Durability = CurrentItemMaxUses - Config.ItemUsage
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, cactusdurability =  Durability }, 1, nil)
+                Citizen.Wait(150)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
                 local NewToolId = NewItemID.id
                 TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
             end
         else
-            local Durability = CurrentItemMaxUses - Config.ItemUsage
-            exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, cactusdurability =  Durability }, 1, nil)
-            Citizen.Wait(150)
-            local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
-            local NewToolId = NewItemID.id
-            TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
-        end
-    else
-        local ItemData = exports.vorp_inventory:getItemByMainId(src, ToolId)
-        if ItemData ~= nil and ItemData.metadata.cactusdurability ~= nil then
-            local NewDurability = ItemData.metadata.cactusdurability - Config.ItemUsage
-            if NewDurability < Config.ItemUsage then
-                exports.vorp_inventory:subItemID(src, ToolId)
-                TriggerClientEvent('mms-cactus:client:ToolOut',src,ToolId)
-                VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+            local ItemData = exports.vorp_inventory:getItemByMainId(src, ToolId)
+            if ItemData ~= nil and ItemData.metadata.cactusdurability ~= nil then
+                local NewDurability = ItemData.metadata.cactusdurability - Config.ItemUsage
+                if NewDurability < Config.ItemUsage then
+                    exports.vorp_inventory:subItemID(src, ToolId)
+                    TriggerClientEvent('mms-cactus:client:ToolOut',src,ToolId)
+                    VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+                else
+                    exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability }, 1, nil)
+                    local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
+                    local NewToolId = NewItemID.id
+                    TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
+                end
             else
-                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability }, 1, nil)
-                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, cactusdurability =  NewDurability })
+                local Durability = CurrentItemMaxUses - Config.ItemUsage
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, cactusdurability =  Durability }, 1, nil)
+                Citizen.Wait(150)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
                 local NewToolId = NewItemID.id
                 TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
             end
-        else
-            local Durability = CurrentItemMaxUses - Config.ItemUsage
-            exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, cactusdurability =  Durability }, 1, nil)
-            Citizen.Wait(150)
-            local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, cactusdurability =  Durability })
-            local NewToolId = NewItemID.id
-            TriggerClientEvent('mms-cactus:client:UpdateItemId',src,NewToolId)
         end
     end
 end)
