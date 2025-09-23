@@ -14,6 +14,7 @@ local CurrentItem = nil
 local CurrentItemMaxUses = nil
 local InTown = false
 local TownName = nil
+local Working = false
 
 -- Axe out
 
@@ -78,7 +79,7 @@ while true do
                 Chopped = true
             end
         end
-        if CloseCactus and not Chopped then
+        if CloseCactus and not Chopped and not Working then
             sleep = false
             ChopCactusPrompt:ShowGroup(_U('Cactus'))
             
@@ -136,6 +137,7 @@ end
 
 RegisterNetEvent('mms-cactus:client:ChopCactus')
 AddEventHandler('mms-cactus:client:ChopCactus',function(ToolId)
+    Working = true
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
     FreezeEntityPosition(MyPed,true)
@@ -144,6 +146,8 @@ AddEventHandler('mms-cactus:client:ChopCactus',function(ToolId)
     Progressbar(Config.ChopTime,_U('WorkingHere'))
     FreezeEntityPosition(MyPed,false)
     TriggerServerEvent('mms-cactus:server:FinishChoppingcactus',ToolId,CurrentItem,CurrentItemMaxUses)
+    Citizen.Wait(500)
+    Working = false
 end)
 
 --- Refresh Them
