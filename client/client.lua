@@ -141,13 +141,42 @@ AddEventHandler('mms-cactus:client:ChopCactus',function(ToolId)
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
     FreezeEntityPosition(MyPed,true)
-    Anim(MyPed, "amb_work@world_human_tree_chop_new@working@pre_swing@male_a@trans", "pre_swing_trans_after_swing",
-    -1, 7)
+    TriggerEvent('mms-cactus:client:ChoppingAnimation',MyPed)
     Progressbar(Config.ChopTime,_U('WorkingHere'))
     FreezeEntityPosition(MyPed,false)
     TriggerServerEvent('mms-cactus:server:FinishChoppingcactus',ToolId,CurrentItem,CurrentItemMaxUses)
     Citizen.Wait(500)
     Working = false
+end)
+
+RegisterNetEvent('mms-cactus:client:ChoppingAnimation',function(MyPed)
+    local dict1 = "amb_work@world_human_tree_chop_new@working@pre_swing@male_a@trans"
+    local anim1 = "pre_swing_trans_after_swing"
+        
+    local dict2 = "amb_work@world_human_tree_chop_new@working@after_swing@male_a@trans"
+    local anim2 = "after_swing_trans_pre_swing"
+
+    RequestAnimDict(dict1)
+    while not HasAnimDictLoaded(dict1) do Wait(10) end
+    RequestAnimDict(dict2)
+    while not HasAnimDictLoaded(dict2) do Wait(10) end
+
+    while Working do
+        TaskPlayAnim(MyPed, dict1, anim1, 4.0, -4.0, -1, 1, 0, true, 0, false, 0, false)
+        local duration1 = GetAnimDuration(dict1, anim1)
+        Wait(math.floor(duration1 * 1000 * 0.8))
+
+            if not Working then
+                break
+            end
+
+        TaskPlayAnim(MyPed, dict2, anim2, 4.0, -4.0, -1, 1, 0, true, 0, false, 0, false)
+        local duration2 = GetAnimDuration(dict2, anim2)
+        Wait(math.floor(duration2 * 1000 * 0.4))
+    end
+
+    RemoveAnimDict(dict1)
+    RemoveAnimDict(dict2)
 end)
 
 --- Refresh Them

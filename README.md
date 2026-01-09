@@ -27,6 +27,7 @@
 - 1.1.8 Improved Mechanics
 - 1.1.9 Fixed Bug where it takes Durability if you dont get items. 
 - 1.2.0 Added Exploit Protection ( Cant Spam G Anymore )
+- 1.2.1 Fixed Chopping Animation
 
 # installation 
 
