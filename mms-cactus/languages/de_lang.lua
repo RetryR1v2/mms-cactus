@@ -1,0 +1,20 @@
+Locales["de_lang"] = {
+    Chop = 'Fällen',
+    Cactus = 'Kaktus',
+    Durability = 'Haltbarkeit: ',
+    WorkingHere = 'Fälle Kaktus... ',
+    NoMoreInventorySpaceFor = 'Kein Platz mehr in der Tasche für: ',
+    YouGot = 'Du bekommst: ',
+    WHGot = ' bekommt: ',
+    YouGotLuck = 'Du hast Glück und bekommst zusätzlich: ',
+    WHGotLucky = ' bekommt durch Glück: ',
+    ToolBroken = 'Dein Werkzeug ist Kaputt',
+    InHere = 'In ',
+    YouCantChop = ' kannst du nicht Hacken.',
+    NoToolInHand = 'Du hast kein Werkzeug in der Hand um es zu Reparieren.',
+    ToolIsNew = 'Dieses Werkzeug ist nicht Beschädigt.',
+    NoRepairItem = 'Kein Reperatur Werkzeug',
+    RepairingTool = 'Repariere Werkzeug',
+    --NEW
+    YouHaveNoToolInPocket = 'Du hast kein Werkzeug',
+}
